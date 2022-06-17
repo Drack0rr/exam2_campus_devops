@@ -17,11 +17,6 @@ pipeline {
             }
             agent { docker { image 'registry.gitlab.com/robconnolly/docker-ansible:latest' } }
             stages {
-               stage("Verify ansible playbook syntax deploy") {
-                   steps {
-                       sh 'ansible-lint playbook.yml'
-                   }
-               }
                stage("Deploy app in production") {
                     when {
                        expression { GIT_BRANCH == 'origin/master' }
