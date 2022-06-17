@@ -1,0 +1,46 @@
+- name: Installation Packet Apache
+  apt: name=apache2 update_cache=yes state=latest
+ 
+- name: Démarre apache2 Service
+  systemd: name=apache2 state=started enabled=yes
+
+- name: Active module apache2 rewrite
+  ansible.builtin.command: a2enmod rewrite
+  ignore_errors: True
+
+- name: Active module apache2 deflate
+  ansible.builtin.command: a2enmod deflate
+  ignore_errors: True
+
+- name: Active module apache2 headers
+  ansible.builtin.command: a2enmod headers
+  ignore_errors: True
+
+- name: Active module apache2 ssl
+  ansible.builtin.command: a2enmod ssl
+  ignore_errors: True
+
+
+- name: Démarre apache2 Service
+  systemd: name=apache2 state=restarted enabled=yes
+ 
+- name: Creation du Document Root Apache
+  file:
+    path: "/var/www/{{ http_host }}"
+    state: directory
+    owner: "www-data"
+    group: "www-data"
+    mode: '0755'
+
+- name: Suppression fichier par defaut apache de virtual host
+  file:
+    path: /etc/apache2/sites-enabled/000-default.conf
+    state: absent
+ 
+- name: Créer Apache VirtualHost
+  template:
+    src: "files/httpd.conf"
+    dest: "/etc/apache2/sites-enabled/000-default.conf"
+    owner: root
+    group: root
+    mode: u=rw,g=r,o=r

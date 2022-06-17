@@ -1,0 +1,49 @@
+# Configuration Wordpress
+ 
+    - name: Télécharge et dézippe la dernière version de WORDPRESS
+      unarchive:
+        src: https://wordpress.org/latest.tar.gz
+        dest: "/var/www/{{ http_host }}"
+        remote_src: yes
+        creates: "/var/www/{{ http_host }}/wordpress"
+ 
+    - name: Set ownership
+      file:
+        path: "/var/www/{{ http_host }}"
+        state: directory
+        recurse: yes
+        owner: www-data
+        group: www-data
+ 
+    - name: Créer les permissions pour les dossiers
+      shell: "/usr/bin/find /var/www/{{ http_host }}/wordpress/ -type d -exec chmod 750 {} \\;"
+ 
+    - name: Créer les permissions pour les fichiers
+      shell: "/usr/bin/find /var/www/{{ http_host }}/wordpress/ -type f -exec chmod 640 {} \\;"
+ 
+    - name: Copie le fichier sample config
+      command: mv /var/www/{{ http_host }}/wordpress/wp-config-sample.php /var/www/{{ http_host }}/wordpress/wp-config.php creates=/var/www/{{ http_host }}/wordpress/wp-config.php
+      become: True
+ 
+    - name: Met à jour la configuration WORDPRESS
+      lineinfile:
+        path: "/var/www/{{ http_host }}/wordpress/wp-config.php"
+        regexp: "{{item.regexp}}"
+        line: "{{item.line}}"
+      with_items:
+        - {'regexp': "define\\( 'DB_NAME', '(.)+' \\);", 'line': "define( 'DB_NAME', '{{mysql_db}}' );"}
+        - {'regexp': "define\\( 'DB_USER', '(.)+' \\);", 'line': "define( 'DB_USER', '{{mysql_user}}' );"}
+        - {'regexp': "define\\( 'DB_PASSWORD', '(.)+' \\);", 'line': "define( 'DB_PASSWORD', '{{mysql_password}}' );"}
+        - {'regexp': "define\\( 'DB_HOST', '(.)+' \\);", 'line': "define( 'DB_HOST', '{{mysql_host}}' );"}
+
+    - name: Création page PHP Info 
+      template:
+        src: "files/phpinfo.php"
+        dest: "/var/www/{{ http_host }}/wordpress/info.php"
+        owner: "www-data"
+        group: "www-data"
+        mode: u=rw,g=r,o=r
+     
+    - name: Redémarre le Service httpd
+      systemd: name=apache2 state=restarted
+      become: True

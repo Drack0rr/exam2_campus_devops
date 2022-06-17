@@ -1,0 +1,13 @@
+---
+- name: Installation Wordpress
+  hosts: prod
+  gather_facts: True
+  become: True
+  vars_files:
+    - vars/default.yml
+  roles:
+    - mysql
+    - apache
+    - php
+    - wordpress
+

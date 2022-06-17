@@ -1,0 +1,14 @@
+#PHP Confs
+php_modules: [ 'php', 'php-curl', 'php-gd', 'php-mbstring', 'php-xml', 'php-xmlrpc', 'php-soap', 'php-intl', 'php-zip' ]
+ 
+#MySQL Confs
+mysql_root_password: "Password"
+mysql_db: "wordpress_db"
+mysql_user: "wordpress_user"
+mysql_password: "Password"
+mysql_host: "localhost"
+ 
+#HTTP Confs
+http_host: "wp.example.com"
+http_conf: "wp.example.com.conf"
+http_port: "80"

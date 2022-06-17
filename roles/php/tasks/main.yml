@@ -1,0 +1,21 @@
+
+- name: Installation prerequis
+  apt:
+    name:
+      - php
+      - php-pdo
+      - php-mysql
+      - php-zip
+      - php-gd
+      - php-mbstring
+      - php-curl
+      - php-xml
+      - php-pear
+      - php-bcmath
+    state: latest
+    update_cache: yes
+
+  
+- name: Installation Extensions PHP
+  apt: name={{ item }} update_cache=yes state=latest
+  loop: "{{ php_modules }}"
