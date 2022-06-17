@@ -6,3 +6,11 @@ warn_list:  # or 'skip_list' to silence them completely
   - yaml  # Violations reported by yamllint.
 
   - no-changed-when
+
+skip_list:
+
+  - indentation
+  - brackets
+  - trailing-spaces
+  - empty-lines
+  - line-length
