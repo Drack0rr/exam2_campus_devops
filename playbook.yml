@@ -1,6 +1,6 @@
 ---
 - name: Installation Wordpress
-  hosts: prod
+  hosts: wordpress
   gather_facts: True
   become: True
   vars_files:
